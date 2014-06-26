@@ -1,10 +1,10 @@
 {
   "name": "md-middleware",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Markdown middleware for connect/express using marked and pygmentize.",
   "keywords": ["markdown middleware", "marked middleware", "connect", "express", "github", "serve", "marked", "markdown"],
   "author": "Cole Lawrence",
-  "main": "index.js",
+  "main": "md-middleware.js",
   "contributors": [
     "Jake Rosoman<jkroso@gmail.com>"
   ],
@@ -17,5 +17,5 @@
   "devDependencies": {
     "connect": "2.8.4"
   },
-  "files": ["index.js"]
+  "files": ["md-middleware.js"]
 }
