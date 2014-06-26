@@ -1,35 +1,20 @@
 
 var highlight = require('pygmentize-bundled')
-var marked = require('marked')
-
-
-function compile (contents, options, cCallback) {
-  var highlightRegex = /<pre><code class="lang-([^\s"]+)[\s\S]*?>([\s\S]+?)<\/code><\/pre>/g
-  function replaceCodeWithHighlights (html, omit, place, rCallback) {
-    if (2 === arguments.length) rCallback = omit
-    else {
-      html = html.replace(omit, place)
-    }
-    console.log (html)
-    var match = html.match(highlightRegex)
-    console.log (match)
-    if (match) {
-      highlight ({ lang: match[1], format: 'html' }, match[2], function (err, highlights) {
-        if (err) return rCallback(err)
-        replaceCodeWithHighlights(html, match[0], highlights, rCallback)
-      })
-    } else {
-      rCallback(null, html)
-    }
-  }
-  marked(contents, options, function (err, html) {
-    replaceCodeWithHighlights(html, cCallback)
-  })
-}
+var compile = require('marked')
 var path = require('path')
 var fs = require('fs')
 
 var fileNameRegex = /([^\\\/]*)$/
+var postHighlightExcessRemoval = function (html) {
+  console.log(html)
+  var hlExcessRegex = /<pre><code( class="([^"]*)")?><div class="highlight">/g
+  return html.replace(hlExcessRegex, function (match, langClass, langClass2) {
+    console.log(match, langClass, langClass2)
+    if (langClass) langClass = langClass2 + " highlight"
+    else langClass = ""
+    return "<div class=\"" + langClass + "\">"
+  })
+}
 function bootstrapExtend (req, res, html) {
   fs.readFile('vs.css', 'utf8', function (err, contents) {
     res.end(
@@ -40,7 +25,7 @@ function bootstrapExtend (req, res, html) {
       "</head>" +
       "<body>" +
         "<div class='container'>" +
-          html +
+          postHighlightExcessRemoval(html) +
         "</div>" +
       "</body>"
     )
@@ -57,20 +42,26 @@ module.exports = function(opts){
     if (!(regex).test(file)) return next()
 
     file = path.join(dir, file)
-    fs.readFile(file, 'utf8', function (err, contents) {
-      if (err) return next(err)
-      compile(contents, {
-        gfm: true,
-        pedantic: false,
-        tables: true,
-        breaks: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false
-      }, function (err, html) {
-        if (err) return next(err)
-        extend(req, res, html)
+    try {
+      fs.readFile(file, 'utf8', function (err, contents) {
+        compile(contents, {
+          gfm: true,
+          pedantic: false,
+          tables: true,
+          breaks: false,
+          sanitize: false,
+          smartLists: true,
+          smartypants: false,
+          highlight: function(code, lang, done){
+            highlight({lang: lang, format: 'html'}, code, done)
+          }
+        }, function (err, html) {
+          if (err) throw err
+          extend(req, res, html)
+        })
       })
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 }
