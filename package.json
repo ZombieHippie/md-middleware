@@ -1,23 +1,21 @@
 {
-  "name": "markdown-middleware",
-  "version": "0.1.8",
-  "description": "middleware for serving markdown files as rendered HTML",
-  "keywords": ["markdown", "connect", "github", "serve"],
-  "author": "Jake Rosoman<jkroso@gmail.com>",
-  "repository": "git://github.com/jkroso/markdown-middleware.git",
+  "name": "md-middleware",
+  "version": "0.0.1",
+  "description": "Markdown middleware for connect/express using marked and pygmentize.",
+  "keywords": ["markdown middleware", "marked middleware", "connect", "express", "github", "serve", "marked", "markdown"],
+  "author": "Cole Lawrence",
+  "main": "index.js",
+  "contributors": [
+    "Jake Rosoman<jkroso@gmail.com>"
+  ],
+  "repository": "git://github.com/ZombieHippie/md-middleware.git",
+  "homepage": "https://github.com/ZombieHippie/md-middleware",
   "dependencies": {
     "pygmentize-bundled": "^2.1.0",
-    "map": "jkroso/map#0.2.11",
-    "parse-duration": "~0.1.0",
-    "lift-result": "~0.1.5",
-    "solicit": "~0.0.7",
-    "result": "~1.0.2",
-    "marked": "~0.3.2",
-    "rm-r": "~1.0.2",
-    "ejs": "~1.0.0"
+    "marked": "~0.3.2"
   },
   "devDependencies": {
     "connect": "2.8.4"
   },
-  "files": ["index.html", "index.js"]
+  "files": ["index.js"]
 }
